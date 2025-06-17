@@ -1,5 +1,5 @@
-target/
-.snapshot/
-log/
-.metadata/
+/target
+/.snapshot
+/log
+.metadata
 
