@@ -1,0 +1,51 @@
+[package]
+name = "KEEP_RUNNING"
+version = "0.1.0"
+edition = "2021"
+authors = ["Ziyuan DU <xyw99726@gmail.com>"]
+
+[dependencies]
+async-trait = "0.1"
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"]}
+serde_json = "1.0.0"
+tonic = "0.13.0"
+prost = "0.13"
+tower = "0.4"
+log = "0.4"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt"] }
+anyhow = "1.0"
+tempfile = "3.0"
+regex = "1.11.0"
+lazy_static = "1.5.0"
+rand = "0.9.0"
+futures = "0.3.0"
+tracing-appender = "0.2.3"
+
+# [[example]]
+# name = "client"
+# path = "hello_tonic/client.rs"
+
+# [[example]]
+# name = "server"
+# path = "hello_tonic/server.rs"
+
+
+
+[[example]]
+name = "client"
+path = "app/client.rs"
+
+[[example]]
+name = "server"
+path = "app/server1.rs"
+
+
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full", "test-util"] }
+
+[build-dependencies]
+tonic-build = "0.13.0"
+tracing-subscriber = { version = "0.3", features = ["fmt"] }

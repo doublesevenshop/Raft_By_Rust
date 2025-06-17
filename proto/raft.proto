@@ -1,0 +1,120 @@
+syntax = "proto3";
+package raft;
+
+// 消息字段均小写
+// 消息类型驼峰
+// 枚举字段用全大写+下划线
+// 服务使用驼峰
+
+
+
+enum EntryType {
+  CONFIGURATION = 0; // 配置变更条目
+  DATA = 1;          // 数据条目
+  NOOP = 2;          // 无操作条目
+}
+
+enum SnapshotDataType {
+  METADATA = 0;  // 快照元数据
+  SNAPSHOT = 1;  // 快照数据
+}
+
+message LogEntry {
+  uint64 term = 1;       // 任期
+  uint64 index = 2;      // 索引
+  EntryType entry_type = 3;  // 条目类型
+  bytes data = 4;        // 数据
+}
+
+message AppendEntriesRequest {
+  uint64 term = 1;                   // Leader的任期
+  uint64 leader_id = 2;              // Leader的ID
+  uint64 prev_log_term = 3;          // 前一个日志条目的任期
+  uint64 prev_log_index = 4;         // 前一个日志条目的索引
+  repeated LogEntry entries = 5;     // 需要复制的日志条目
+  uint64 leader_commit = 6;          // Leader已提交的最高日志索引
+}
+
+message AppendEntriesResponse {
+  uint64 term = 1;     // 当前任期
+  bool success = 2;    // 日志复制是否成功
+}
+
+message RequestVoteRequest {
+  uint64 term = 1;                 // Candidate的任期
+  uint64 candidate_id = 2;         // Candidate的ID
+  uint64 last_log_term = 3;        // Candidate最后日志条目的任期
+  uint64 last_log_index = 4;       // Candidate最后日志条目的索引
+}
+
+message RequestVoteResponse {
+  uint64 term = 1;          // 当前任期
+  bool vote_granted = 2;    // 是否授予投票
+}
+
+message InstallSnapshotRequest {
+  uint64 term = 1;                // 当前任期
+  uint64 leader_id = 2;           // Leader的ID
+  uint64 last_included_index = 3; // 快照最后包含的日志索引
+  uint64 last_included_term = 4;  // 快照最后包含的日志任期
+  uint64 offset = 5;              // 快照数据偏移量
+  bytes data = 6;                 // 快照数据分块
+  SnapshotDataType snapshot_data_type = 7; // 数据类型
+  bool done = 8;                  // 是否为最后一个分块
+}
+
+message InstallSnapshotResponse {
+  uint64 term = 1; // 当前任期
+}
+message Redirect {
+  repeated ServerInfo servers = 1;
+}
+
+
+message ServerInfo {
+  uint64 server_id = 1;   // 服务器ID
+  string server_addr = 2; // 服务器地址
+}
+
+message GetLeaderRequest {}
+message GetLeaderResponse {
+  ServerInfo leader = 1;
+  optional Redirect redirect_to = 2;  //如果没有leader，建议给其他servers
+}
+
+message GetConfigurationRequest {}
+message GetConfigurationResponse {
+  repeated ServerInfo servers = 1;
+}
+
+message SetConfigurationRequest {
+  repeated ServerInfo new_servers = 1;
+}
+message SetConfigurationResponse {
+  bool success = 1;
+  // optional ServerInfo leader_hint = 2;  // hint for actual leader if this node is not
+  // optional string message = 3;                   // optional message 
+}
+
+message ProposeRequest {
+  bytes data = 1; // 提议的数据
+}
+message ProposeResponse {
+  bool success = 1; // 提议是否成功
+  // 当客户端连接的不是Leader的时候，帮助重定向
+  optional uint64 index = 2; // 成功时的日志索引
+  optional string leader_addr = 3; // 成功时的leader地址
+}
+
+service ConsensusRpc {
+  rpc AppendEntries(AppendEntriesRequest) returns (AppendEntriesResponse);
+  rpc RequestVote(RequestVoteRequest) returns (RequestVoteResponse);
+  rpc InstallSnapshot(InstallSnapshotRequest) returns (InstallSnapshotResponse);
+}
+
+service ManagementRpc {
+  rpc GetLeader(GetLeaderRequest) returns (GetLeaderResponse);
+  rpc GetConfiguration(GetConfigurationRequest) returns (GetConfigurationResponse);
+  rpc SetConfiguration(SetConfigurationRequest) returns (SetConfigurationResponse);
+  rpc Propose(ProposeRequest) returns (ProposeResponse);
+}

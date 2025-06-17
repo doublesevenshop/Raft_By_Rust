@@ -1,0 +1,28 @@
+{
+  "entries": [
+    {
+      "term": 11,
+      "index": 11,
+      "entry_type": 2,
+      "data": [
+        78,
+        111,
+        110,
+        101
+      ]
+    },
+    {
+      "term": 12,
+      "index": 12,
+      "entry_type": 2,
+      "data": [
+        78,
+        111,
+        110,
+        101
+      ]
+    }
+  ],
+  "start_index": 11,
+  "metadata_dir": "/home/miki/Desktop/code/rust/KEEP_RUNNING/.metadata/server_2"
+}

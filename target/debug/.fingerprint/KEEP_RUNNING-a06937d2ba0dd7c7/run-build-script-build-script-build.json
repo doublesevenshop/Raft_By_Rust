@@ -1,0 +1,1 @@
+{"rustc":15597765236515928571,"features":"","declared_features":"","target":0,"profile":0,"path":0,"deps":[[1687995984746958457,"build_script_build",false,6747088391648268998]],"local":[{"RerunIfChanged":{"output":"debug/build/KEEP_RUNNING-a06937d2ba0dd7c7/output","paths":["proto/raft.proto","proto","proto/helloworld.proto","proto"]}}],"rustflags":[],"config":0,"compile_kind":0}
