@@ -1,4 +1,0 @@
-cargo:rerun-if-changed=proto/raft.proto
-cargo:rerun-if-changed=proto
-cargo:rerun-if-changed=proto/helloworld.proto
-cargo:rerun-if-changed=proto
